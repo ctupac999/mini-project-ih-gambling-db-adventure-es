@@ -32,14 +32,14 @@ WITH bets_data AS (
         b.Classid,
         b.CategoryId,
         p.PRODUCT,
-        a.CUSTID,  -- Incluyendo CUSTID desde la tabla ACCOUNT
+        a.CUSTID,  
         REPLACE(b.Bet_Amt, ',', '.') AS Bet_Amt_Formatted
     FROM 
         PRODUCT p
     JOIN 
         BETTING b ON b.Classid = p.Classid AND b.CategoryId = p.CategoryId
-    JOIN 
-        ACCOUNT a ON b.ACCOUNTNO = a.ACCOUNTNO  -- Uniendo para obtener CUSTID
+    JOIN
+        ACCOUNT a ON b.ACCOUNTNO = a.ACCOUNTNO 
 )
 SELECT * FROM bets_data;
 
@@ -159,14 +159,14 @@ ORDER BY
 -- pregunta 10
 
 SELECT 
-    f.CUSTID,  -- Identificador del jugador
+    f.CUSTID,  
     SUM(CAST(f.Bet_Amt_Formatted AS DECIMAL(10, 2))) AS total_bet_amount
 FROM 
     formatted_bets f
 WHERE 
-    f.PRODUCT = 'Sportsbook'  -- Solo jugadores que apuestan en Sportsbook
-    AND CAST(f.Bet_Amt_Formatted AS DECIMAL(10, 2)) > 0  -- Solo apuestas mayores que 0
-    AND f.CUSTID NOT IN (  -- Excluir jugadores que también juegan en otros productos
+    f.PRODUCT = 'Sportsbook'  
+    AND CAST(f.Bet_Amt_Formatted AS DECIMAL(10, 2)) > 0  
+    AND f.CUSTID NOT IN (  
         SELECT DISTINCT f2.CUSTID
         FROM formatted_bets f2
         WHERE f2.PRODUCT <> 'Sportsbook'
@@ -177,3 +177,15 @@ ORDER BY
     total_bet_amount DESC;
 
 -- pregunta 11
+
+SELECT 
+    student_id,
+    student_name,
+    city,
+    school_id,
+    GPA
+FROM 
+    student_school
+ORDER BY 
+    GPA DESC 
+LIMIT 5;  
