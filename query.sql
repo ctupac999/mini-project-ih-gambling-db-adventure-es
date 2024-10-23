@@ -149,8 +149,8 @@ SELECT
 FROM 
     formatted_bets f
 WHERE 
-    f.PRODUCT = 'Sportsbook'  -- Solo incluir apuestas en Sportsbook
-    AND CAST(f.Bet_Amt_Formatted AS DECIMAL(10, 2)) > 0  -- Solo incluir apuestas mayores a 0
+    f.PRODUCT = 'Sportsbook' 
+    AND CAST(f.Bet_Amt_Formatted AS DECIMAL(10, 2)) > 0 
 GROUP BY 
     f.PRODUCT
 ORDER BY 
@@ -179,13 +179,28 @@ ORDER BY
 -- pregunta 11
 
 SELECT 
-    student_id,
-    student_name,
-    city,
-    school_id,
-    GPA
-FROM 
-    student_school
-ORDER BY 
-    GPA DESC 
-LIMIT 5;  
+SELECT student_id, student_name, city, school_id, GPA
+FROM students
+ORDER BY GPA DESC
+LIMIT 5;
+
+-- pregunta 12
+
+SELECT s.school_id, sc.school_name, COUNT(st.student_id) AS student_count
+FROM schools s
+LEFT JOIN students st ON s.school_id = st.school_id
+GROUP BY s.school_id, sc.school_name;
+
+pregunta 13
+
+WITH RankedStudents AS (
+    SELECT student_id, student_name, school_id, 
+           CAST(REPLACE(GPA, ',', '.') AS DECIMAL(3,2)) AS GPA_num,
+           ROW_NUMBER() OVER (PARTITION BY school_id ORDER BY CAST(REPLACE(GPA, ',', '.') AS DECIMAL(3,2)) DESC) AS rank
+    FROM students
+)
+SELECT student_id, student_name, school_id, GPA_num
+FROM RankedStudents
+WHERE rank <= 3
+ORDER BY school_id, GPA_num DESC;
+
